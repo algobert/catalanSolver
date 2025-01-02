@@ -19,5 +19,16 @@
       "src": "/(.*)",
       "dest": "server.js"
     }
+  ],
+  "headers": [
+    {
+      "source": "/(.*).wasm",
+      "headers": [
+        {
+          "key": "Content-Type",
+          "value": "application/wasm"
+        }
+      ]
+    }
   ]
 }
