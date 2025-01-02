@@ -102,20 +102,38 @@
 </audio>
 <audio id="suckSound" src="/gam2.mp3"></audio>
 <!-- Load WASM first -->
+<!-- Load WASM first -->
 <script type="module">
     import init from './js/pkg/catalan.js';
-    async function initWasm() {
+
+    window.initializeGame = async function() {
         try {
             const wasm = await init();
             console.log("WASM initialized successfully");
-            return wasm;
+
+            // Erstelle die GraphState-Instanz
+            const graphState = new GraphState();
+
+            // Erstelle die AutoSolver-Instanz
+            const autoSolver = new AutoSolver(graphState);
+
+            // Setze das WASM-Modul
+            autoSolver.setWasmModule(wasm);
+
+            // Speichere die Instanzen global
+            window.graphState = graphState;
+            window.autoSolver = autoSolver;
+
         } catch(e) {
             console.error("WASM initialization failed:", e);
             throw e;
         }
     }
-    initWasm();
+
+    // Starte die Initialisierung
+    window.initializeGame();
 </script>
+
 <!-- Then load our JavaScript files -->
 <script src="/js/graph.js"></script>
 <script src="/js/autoSolver.js"></script>

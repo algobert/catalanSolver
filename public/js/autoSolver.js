@@ -3,16 +3,11 @@ class AutoSolver {
         this.graphState = graphState;
         this.wasmModule = null;
         this.isAutoSolving = false;
-        this.initWasm();
     }
 
-    async initWasm() {
-        try {
-            this.wasmModule = await import('./pkg/catalan.js');
-            console.log("WASM module loaded in AutoSolver");
-        } catch (e) {
-            console.error("Failed to load WASM module in AutoSolver:", e);
-        }
+    setWasmModule(module) {
+        this.wasmModule = module;
+        console.log("WASM module set in AutoSolver");
     }
 
     async getSolution() {
@@ -22,11 +17,8 @@ class AutoSolver {
         }
 
         try {
-            // Hole zuerst den GML-Inhalt via fetch
             const response = await fetch(this.graphState.currentGmlPath);
             const gmlContent = await response.text();
-
-            // Übergebe den GML-Inhalt direkt an Rust
             const solution = await this.wasmModule.solve_catalan_gml_content(gmlContent);
             return solution;
         } catch (e) {
@@ -34,6 +26,7 @@ class AutoSolver {
             return null;
         }
     }
+
 
     async autoSolve() {
         if (this.isAutoSolving) return;
