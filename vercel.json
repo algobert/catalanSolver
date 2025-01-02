@@ -13,12 +13,18 @@
   "routes": [
     {
       "src": "/js/pkg/(.*)",
-      "headers": { "content-type": "application/wasm" },
-      "dest": "/public/js/pkg/$1"
+      "dest": "/public/js/pkg/$1",
+      "headers": {
+        "Content-Type": "application/wasm"
+      }
     },
     {
       "src": "/js/(.*)",
       "dest": "/public/js/$1"
+    },
+    {
+      "src": "/(.*)\\.mp3",
+      "dest": "/public/$1.mp3"
     },
     {
       "src": "/(.*)",

@@ -98,31 +98,32 @@
     Solved Levels: None
 </div>
 <!-- Add audio elements for the sounds -->
-<audio id="levelSound" src="flixel.mp3">
-</audio>
+<audio id="levelSound" src="/flixel.mp3"></audio>
 <audio id="suckSound" src="/gam2.mp3"></audio>
 <!-- Load WASM first -->
-<!-- Load WASM first -->
 <script type="module">
-    import init from './js/pkg/catalan.js';
+    import init from '/js/pkg/catalan.js';  // Füge führenden Slash hinzu
 
     window.initializeGame = async function() {
         try {
             const wasm = await init();
             console.log("WASM initialized successfully");
 
-            // Erstelle die GraphState-Instanz
-            const graphState = new GraphState();
+            // Warte bis GraphState und AutoSolver definiert sind
+            setTimeout(() => {
+                // Erstelle die GraphState-Instanz
+                const graphState = new GraphState();
 
-            // Erstelle die AutoSolver-Instanz
-            const autoSolver = new AutoSolver(graphState);
+                // Erstelle die AutoSolver-Instanz
+                const autoSolver = new AutoSolver(graphState);
 
-            // Setze das WASM-Modul
-            autoSolver.setWasmModule(wasm);
+                // Setze das WASM-Modul
+                autoSolver.setWasmModule(wasm);
 
-            // Speichere die Instanzen global
-            window.graphState = graphState;
-            window.autoSolver = autoSolver;
+                // Speichere die Instanzen global
+                window.graphState = graphState;
+                window.autoSolver = autoSolver;
+            }, 100);
 
         } catch(e) {
             console.error("WASM initialization failed:", e);
@@ -133,6 +134,7 @@
     // Starte die Initialisierung
     window.initializeGame();
 </script>
+
 
 <!-- Then load our JavaScript files -->
 <script src="/js/graph.js"></script>
