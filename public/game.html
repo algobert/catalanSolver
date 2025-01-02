@@ -105,7 +105,12 @@
 <script type="module">
     import init from './js/pkg/catalan.js';
     async function loadWasm() {
-        await init();
+        try {
+            await init();
+            console.log("WASM successfully loaded");
+        } catch (e) {
+            console.error("WASM loading failed:", e);
+        }
     }
     loadWasm();
 </script>

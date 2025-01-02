@@ -9,8 +9,9 @@ class AutoSolver {
     async initWasm() {
         try {
             this.wasmModule = await import('./pkg/catalan.js');
+            console.log("WASM module loaded in AutoSolver");
         } catch (e) {
-            console.error("Failed to load WASM module:", e);
+            console.error("Failed to load WASM module in AutoSolver:", e);
         }
     }
 
