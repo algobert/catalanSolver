@@ -46,8 +46,8 @@ class AutoSolver {
 
         // Führe die Züge nacheinander aus
         for (const nodeId of solution) {
-            // Warte 1 Sekunde zwischen den Zügen für die Animation
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            // Warte 2 Sekunde zwischen den Zügen für die Animation
+            await new Promise(resolve => setTimeout(resolve, 2000));
 
             // Finde den Knoten
             const node = this.graphState.nodes.find(n => n.id === nodeId);

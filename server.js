@@ -5,9 +5,14 @@ const path = require('path');
 
 // Statische Dateien aus dem public Ordner servieren
 app.use(express.static('public'));
-// GML Dateien servieren
-app.use('/gml-files', express.static('gml-files'));
 
+// Route für das Success-GIF
+app.get('/success-gif', (req, res) => {
+    const gifPath = path.join(__dirname, 'private', 'suc.gif');
+    res.sendFile(gifPath);
+});
+
+// GML Dateien Route
 app.get('/gml-files', (req, res) => {
     const gmlDir = path.join(__dirname, 'gml-files');
     fs.readdir(gmlDir, (err, files) => {
@@ -20,6 +25,15 @@ app.get('/gml-files', (req, res) => {
     });
 });
 
-app.listen(3000, () => {
-    console.log('Server läuft auf Port 3000');
+// Route für einzelne GML-Dateien
+app.get('/gml-files/:file', (req, res) => {
+    const fileName = req.params.file;
+    const filePath = path.join(__dirname, 'gml-files', fileName);
+    res.sendFile(filePath);
+});
+
+const port = process.env.PORT || 3000;
+
+app.listen(port, () => {
+    console.log(`Server läuft auf Port ${port}`);
 });

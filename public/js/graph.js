@@ -272,21 +272,22 @@ class GraphState {
         if (!mergingNode || this.suckTimeout || this.isSucking) return;
 
         this.isSucking = true;
-        let steps = 100;
+        let steps = 50; // Reduzierte Schrittanzahl für schnellere Animation
 
         const animateSuck = () => {
             if (steps-- > 0) {
                 neighbors.forEach(neighborId => {
                     const neighbor = this.nodes.find(node => node.id === neighborId);
                     if (neighbor) {
-                        neighbor.x += (mergingNode.x - neighbor.x) * 0.1;
-                        neighbor.y += (mergingNode.y - neighbor.y) * 0.1;
+                        // Erhöhte Geschwindigkeit der Annäherung
+                        neighbor.x += (mergingNode.x - neighbor.x) * 0.15;
+                        neighbor.y += (mergingNode.y - neighbor.y) * 0.15;
                     }
                 });
 
                 this.applyForces();
                 this.draw(ctx);
-                this.suckTimeout = setTimeout(animateSuck, 16);
+                this.suckTimeout = setTimeout(animateSuck, 16); // 60 FPS
             } else {
                 clearTimeout(this.suckTimeout);
                 this.suckTimeout = null;
@@ -382,18 +383,14 @@ class GraphState {
         const successMessage = document.getElementById('successMessage');
         successMessage.style.display = 'block';
 
-        // Entferne oder kommentiere die folgende Zeile aus
-        // successMessage.innerHTML = "SUCCESS!";
-
         if (!this.solvedLevels.has(this.currentLevel)) {
             this.solvedLevels.add(this.currentLevel);
             this.updateSolvedLevelsDisplay();
         }
 
-        // Füge einen Timer hinzu, um das GIF nach 3 Sekunden auszublenden
         setTimeout(() => {
             this.hideSuccess();
-        }, 5000); // 3000 Millisekunden = 3 Sekunden
+        }, 5000);
     }
 
     hideSuccess() {
