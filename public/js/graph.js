@@ -272,7 +272,7 @@ class GraphState {
         if (!mergingNode || this.suckTimeout || this.isSucking) return;
 
         this.isSucking = true;
-        let steps = 50;
+        let steps = 100;
 
         const animateSuck = () => {
             if (steps-- > 0) {
@@ -381,11 +381,19 @@ class GraphState {
     displaySuccess() {
         const successMessage = document.getElementById('successMessage');
         successMessage.style.display = 'block';
-        successMessage.innerHTML = "SUCCESS!";
+
+        // Entferne oder kommentiere die folgende Zeile aus
+        // successMessage.innerHTML = "SUCCESS!";
+
         if (!this.solvedLevels.has(this.currentLevel)) {
             this.solvedLevels.add(this.currentLevel);
             this.updateSolvedLevelsDisplay();
         }
+
+        // Füge einen Timer hinzu, um das GIF nach 3 Sekunden auszublenden
+        setTimeout(() => {
+            this.hideSuccess();
+        }, 5000); // 3000 Millisekunden = 3 Sekunden
     }
 
     hideSuccess() {
