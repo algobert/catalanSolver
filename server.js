@@ -6,6 +6,16 @@ const path = require('path');
 // Statische Dateien aus dem public Ordner servieren
 app.use(express.static('public'));
 
+// Root Route für main.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'main.html'));
+});
+
+// Game Route
+app.get('/game', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'game.html'));
+});
+
 // Route für das Success-GIF
 app.get('/success-gif', (req, res) => {
     const gifPath = path.join(__dirname, 'private', 'suc.gif');
