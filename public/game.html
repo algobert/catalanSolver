@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>
+        CATALAN - Inspired by increpare's Catalan
+    </title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100%;
+            background-color: black;
+            color: white;
+        }
+
+        canvas {
+            border: 1px solid black;
+            background-color: black;
+        }
+
+        #successMessage {
+            text-align: center;
+            margin-top: 10px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: none;
+            z-index: 1000;
+        }
+
+        #successMessage img {
+            width: 100px; /* Skaliert das GIF */
+            height: auto;
+        }
+
+        #solvedLevels {
+            font-size: 18px;
+            margin-top: 20px;
+        }
+
+        #controls {
+            margin-top: 10px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1000;
+        }
+
+        #controls select,
+        #controls button {
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        #currentLevelDisplay {
+            position: absolute;
+            top: 50px;
+            left: 10px;
+            font-size: 20px;
+            color: white;
+            z-index: 1000;
+        }
+    </style>
+</head>
+
+<body>
+<!-- Display current level -->
+<div id="currentLevelDisplay">
+    Level: Loading...
+</div>
+<!-- Success Message -->
+<div id="successMessage">
+    <img src="suc.gif" alt="Success">
+</div>
+<!-- Canvas and controls for game -->
+<canvas id="graphCanvas">
+</canvas>
+<div id="controls">
+    <label for="gmlSelect">Choose a GML file:</label>
+    <select id="gmlSelect"></select>
+    <button id="restartButton">Restart Level</button>
+    <button id="undoButton">↩️ Undo</button>
+    <button id="solveButton">🤖 Auto Solve</button>  <!-- Neuer Button -->
+    <label for="nodeLabels">Show node labels</label>
+    <input type="checkbox" id="nodeLabels" checked>
+</div>
+<div id="solvedLevels">
+    Solved Levels: None
+</div>
+<!-- Add audio elements for the sounds -->
+<audio id="levelSound" src="flixel.mp3">
+</audio>
+<audio id="suckSound" src="gam2.mp3">
+</audio>
+<!-- Load WASM first -->
+<script type="module">
+    import init from './js/pkg/catalan.js';
+    async function loadWasm() {
+        await init();
+    }
+    loadWasm();
+</script>
+<!-- Then load our JavaScript files -->
+<script src="js/graph.js"></script>
+<script src="js/autoSolver.js"></script>
+</body>
+
+</html>
