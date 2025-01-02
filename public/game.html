@@ -104,15 +104,17 @@
 <!-- Load WASM first -->
 <script type="module">
     import init from './js/pkg/catalan.js';
-    async function loadWasm() {
+    async function initWasm() {
         try {
-            await init();
-            console.log("WASM successfully loaded");
-        } catch (e) {
-            console.error("WASM loading failed:", e);
+            const wasm = await init();
+            console.log("WASM initialized successfully");
+            return wasm;
+        } catch(e) {
+            console.error("WASM initialization failed:", e);
+            throw e;
         }
     }
-    loadWasm();
+    initWasm();
 </script>
 <!-- Then load our JavaScript files -->
 <script src="/js/graph.js"></script>
