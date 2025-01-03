@@ -1,64 +1,67 @@
-class AutoSolver {
+// js/autoSolver.js
+
+import { Catalan } from './Catalan.js';
+
+export class AutoSolver {
     constructor(graphState) {
         this.graphState = graphState;
-        this.wasmModule = null;
-        this.isAutoSolving = false;
+        this.isRunning = false;
     }
 
-    setWasmModule(module) {
-        this.wasmModule = module;
-        console.log("WASM module set in AutoSolver");
-    }
-
-    async getSolution() {
-        if (!this.wasmModule) {
-            console.error("WASM module not loaded");
-            return null;
-        }
+    async solveCatalanGmlContent(content) {
+        if (this.isRunning) return;
+        this.isRunning = true;
 
         try {
-            const response = await fetch(this.graphState.currentGmlPath);
-            const gmlContent = await response.text();
-            const solution = await this.wasmModule.solve_catalan_gml_content(gmlContent);
-            return solution;
-        } catch (e) {
-            console.error("Error solving puzzle:", e);
-            return null;
+            const catalan = Catalan.parseGmlContent(content);
+            const solution = catalan.solve();
+
+            for (const move of solution) {
+                await this.animateMove(move);
+            }
+        } catch (error) {
+            console.error('Solving failed:', error);
+        } finally {
+            this.isRunning = false;
         }
     }
 
+    async animateMove(move) {
+        const selectedVertex = move.selectedVertex;
+        const neighbours = move.beforeState.getNeighbours(selectedVertex);
+        const neighbourIds = neighbours.map(v => v.getId());
 
-    async autoSolve() {
-        if (this.isAutoSolving) return;
-        this.isAutoSolving = true;
+        this.graphState.selectNode(selectedVertex.getId());
+        await this.graphState.shakeNode(selectedVertex.getId());
+        await this.graphState.suckNodes(selectedVertex.getId(), neighbourIds);
 
-        const solution = await this.getSolution();
-        if (!solution) {
-            this.isAutoSolving = false;
-            return;
-        }
+        // Graph aktualisieren
+        await this.updateGraphState(move.afterState);
+    }
 
-        // Führe die Züge nacheinander aus
-        for (const nodeId of solution) {
-            // Warte 2 Sekunde zwischen den Zügen für die Animation
-            await new Promise(resolve => setTimeout(resolve, 2000));
+    async updateGraphState(newState) {
+        // Bestehenden Graph löschen
+        this.graphState.clear();
 
-            // Finde den Knoten
-            const node = this.graphState.nodes.find(n => n.id === nodeId);
-            if (node) {
-                // Emuliere den Klick auf den Knoten
-                this.graphState.handleNodeClick(nodeId);
-            }
-        }
+        // Neuen Graph aufbauen
+        const vertices = newState.getVertices();
+        vertices.forEach(vertex => {
+            this.graphState.addNode(vertex.getId(), vertex.getId().toString());
+        });
 
-        this.isAutoSolving = false;
+        // Kanten hinzufügen
+        vertices.forEach(vertex => {
+            const neighbours = newState.getNeighbours(vertex);
+            neighbours.forEach(neighbour => {
+                if (vertex.getId() < neighbour.getId()) {
+                    this.graphState.addEdge(vertex.getId(), neighbour.getId());
+                }
+            });
+        });
+
+        this.graphState.layout();
+
+        // Kurze Pause für die Animation
+        return new Promise(resolve => setTimeout(resolve, 500));
     }
 }
-
-// Initialisiere den AutoSolver mit der bestehenden GraphState-Instanz
-const autoSolver = new AutoSolver(graph);
-
-// Event Listener für den Solve-Button
-document.getElementById('solveButton').addEventListener('click', () => {
-    autoSolver.autoSolve();
-});

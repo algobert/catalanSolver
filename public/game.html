@@ -1,144 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html>
 <head>
-    <meta charset="utf-8" />
-    <title>
-        CATALAN - Inspired by increpare's Catalan
-    </title>
-    <style>
-
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            height: 100%;
-            background-color: black;
-            color: white;
-        }
-
-        canvas {
-            border: 1px solid black;
-            background-color: black;
-        }
-
-        #successMessage {
-            text-align: center;
-            margin-top: 10px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            display: none;
-            z-index: 1000;
-        }
-
-        #successMessage img {
-            width: 100px; /* Skaliert das GIF */
-            height: auto;
-        }
-
-        #solvedLevels {
-            font-size: 18px;
-            margin-top: 20px;
-        }
-
-        #controls {
-            margin-top: 10px;
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            z-index: 1000;
-        }
-
-        #controls select,
-        #controls button {
-            font-size: 18px;
-            margin-right: 10px;
-        }
-
-        #currentLevelDisplay {
-            position: absolute;
-            top: 50px;
-            left: 10px;
-            font-size: 20px;
-            color: white;
-            z-index: 1000;
-        }
-        #successMessage img {
-            width: 500px; /* Neue Breite für das GIF */
-            height: auto;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <title>Catalan Solver</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
-
 <body>
-<!-- Display current level -->
-<div id="currentLevelDisplay">
-    Level: Loading...
+<div class="container">
+    <div class="header">
+        <input type="file" id="file-input" accept=".gml">
+    </div>
+    <div id="graph-container"></div>
 </div>
-<!-- Success Message -->
-<div id="successMessage">
-    <img src="/success-gif" alt="Success">
-</div>
-<!-- Canvas and controls for game -->
-<canvas id="graphCanvas">
-</canvas>
-<div id="controls">
-    <label for="gmlSelect">Choose a GML file:</label>
-    <select id="gmlSelect"></select>
-    <button id="restartButton">Restart Level</button>
-    <button id="undoButton">↩️ Undo</button>
-    <button id="solveButton">🤖 Auto Solve</button>  <!-- Neuer Button -->
-    <label for="nodeLabels">Show node labels</label>
-    <input type="checkbox" id="nodeLabels" checked>
-</div>
-<div id="solvedLevels">
-    Solved Levels: None
-</div>
-<!-- Add audio elements for the sounds -->
-<audio id="levelSound" src="/flixel.mp3"></audio>
-<audio id="suckSound" src="/gam2.mp3"></audio>
-<!-- Load WASM first -->
-<script type="module">
-    import init from '/js/pkg/catalan.js';  // Füge führenden Slash hinzu
 
-    window.initializeGame = async function() {
-        try {
-            const wasm = await init();
-            console.log("WASM initialized successfully");
-
-            // Warte bis GraphState und AutoSolver definiert sind
-            setTimeout(() => {
-                // Erstelle die GraphState-Instanz
-                const graphState = new GraphState();
-
-                // Erstelle die AutoSolver-Instanz
-                const autoSolver = new AutoSolver(graphState);
-
-                // Setze das WASM-Modul
-                autoSolver.setWasmModule(wasm);
-
-                // Speichere die Instanzen global
-                window.graphState = graphState;
-                window.autoSolver = autoSolver;
-            }, 100);
-
-        } catch(e) {
-            console.error("WASM initialization failed:", e);
-            throw e;
-        }
-    }
-
-    // Starte die Initialisierung
-    window.initializeGame();
-</script>
-
-
-<!-- Then load our JavaScript files -->
-<script src="/js/graph.js"></script>
-<script src="/js/autoSolver.js"></script>
+<script type="module" src="js/index.js"></script>
 </body>
-
 </html>
