@@ -3,9 +3,10 @@ const app = express();
 const fs = require('fs');
 const path = require('path');
 
+// Statische Dateien aus dem public Ordner servieren
 app.use(express.static('public'));
 
-// Root Route für main.html als Startseite
+// Root Route für main.html als Hauptseite
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'main.html'));
 });

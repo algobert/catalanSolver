@@ -1,18 +1,30 @@
+<!-- public/game.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>Catalan Solver</title>
+    <meta charset="utf-8"/>
+    <title>CATALAN - Inspired by increpare's Catalan</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<!-- Display current level -->
+<div id="currentLevelDisplay">Level: Loading...</div>
+
+<!-- Success Message -->
+<div id="successMessage">SUCCESS!</div>
+
+<!-- Canvas and controls for game -->
 <div class="container">
-    <div class="header">
-        <input type="file" id="file-input" accept=".gml">
-    </div>
     <div id="graph-container"></div>
 </div>
 
-<script type="module" src="js/index.js"></script>
+<!-- Add audio elements -->
+<audio id="levelSound" src="assets/audio/flixel.mp3"></audio>
+<audio id="suckSound" src="assets/audio/gam2.mp3"></audio>
+
+<script type="module">
+    import { initializeGame } from './js/index.js';
+    document.addEventListener('DOMContentLoaded', initializeGame);
+</script>
 </body>
 </html>
