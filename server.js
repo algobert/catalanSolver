@@ -6,6 +6,9 @@ const path = require('path');
 // Statische Dateien aus dem public Ordner servieren
 app.use(express.static('public'));
 
+// Serve autosolver.js from its original path
+app.use('/scripts', express.static(path.join(__dirname, 'scripts')));
+
 // Root Route für main.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'main.html'));
@@ -24,7 +27,7 @@ app.get('/success-gif', (req, res) => {
 
 // GML Dateien Route
 app.get('/gml-files', (req, res) => {
-    const gmlDir = path.join(__dirname, 'gml-files');
+    const gmlDir = path.join(__dirname, 'original-path', 'gml-files'); // Update to original path
     fs.readdir(gmlDir, (err, files) => {
         if (err) {
             res.status(500).send(err);
@@ -38,7 +41,7 @@ app.get('/gml-files', (req, res) => {
 // Route für einzelne GML-Dateien
 app.get('/gml-files/:file', (req, res) => {
     const fileName = req.params.file;
-    const filePath = path.join(__dirname, 'gml-files', fileName);
+    const filePath = path.join(__dirname, 'original-path', 'gml-files', fileName); // Update to original path
     res.sendFile(filePath);
 });
 
