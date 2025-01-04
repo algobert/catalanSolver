@@ -22,7 +22,7 @@ canvas {
 }
 
 #successMessage img {
-    max-width: 300px;
+    max-width: 500px;
     height: auto;
 }
 
@@ -46,7 +46,9 @@ canvas {
 }
 
 #solverButton {
-    background-color: #4CAF50;
+    font-family: inherit; /* Gleiche Schriftart wie andere Buttons */
+    font-size: 14px !important; /* Gleiche Größe erzwingen */
+    padding: 5px 10px !important; /* Gleiches Padding erzwingen */
 }
 
 #currentLevelDisplay {
