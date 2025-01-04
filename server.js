@@ -1,7 +1,13 @@
-const express = require('express');
+import express from 'express';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import fs from 'fs';
+import path from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 const app = express();
-const fs = require('fs');
-const path = require('path');
 
 // GML Files Route
 app.get('/gml-files', (req, res) => {
@@ -33,7 +39,7 @@ app.get('/gml-files/:file', (req, res) => {
     }
 });
 
-// Statische Dateien NACH den GML-Routes
+// Statische Dateien
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Root Route
@@ -60,4 +66,4 @@ if (process.env.NODE_ENV !== 'production') {
     });
 }
 
-module.exports = app;
+export default app;
