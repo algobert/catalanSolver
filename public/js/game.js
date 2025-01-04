@@ -272,21 +272,23 @@ class GraphState {
         if (!mergingNode || this.suckTimeout || this.isSucking) return;
 
         this.isSucking = true;
-        let steps = 75;
+        let steps = 100;  // Erhöht von 75 auf 100 für längere Animation
 
         const animateSuck = () => {
             if (steps-- > 0) {
                 neighbors.forEach(neighborId => {
                     const neighbor = this.nodes.find(node => node.id === neighborId);
                     if (neighbor) {
-                        neighbor.x += (mergingNode.x - neighbor.x) * 0.1;
-                        neighbor.y += (mergingNode.y - neighbor.y) * 0.1;
+                        // Reduziert von 0.1 auf 0.05 für langsamere Bewegung
+                        neighbor.x += (mergingNode.x - neighbor.x) * 0.05;
+                        neighbor.y += (mergingNode.y - neighbor.y) * 0.05;
                     }
                 });
 
                 this.applyForces();
                 this.draw(ctx);
-                this.suckTimeout = setTimeout(animateSuck, 16);
+                // Erhöht von 16 auf 20 Millisekunden für etwas langsamere aber noch flüssige Animation
+                this.suckTimeout = setTimeout(animateSuck, 20);
             } else {
                 clearTimeout(this.suckTimeout);
                 this.suckTimeout = null;

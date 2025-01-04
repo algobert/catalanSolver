@@ -52,15 +52,16 @@ class AutoSolver {
 
         try {
             for (let nodeId of nodeIds) {
-                // Wait until any ongoing sucking animation is complete
+                // Warte bis eine laufende Suck-Animation beendet ist
                 while (this.graphState && this.graphState.isSucking) {
-                    await new Promise(resolve => setTimeout(resolve, 160));
+                    await new Promise(resolve => setTimeout(resolve, 200));
                 }
 
                 if (this.graphState) {
                     console.log("Führe Zug aus für Knoten:", nodeId);
                     this.graphState.handleNodeClick(nodeId);
-                    await new Promise(resolve => setTimeout(resolve, 1000));
+                    // Erhöht von 1000 auf 1500 Millisekunden Wartezeit zwischen den Zügen
+                    await new Promise(resolve => setTimeout(resolve, 1500));
                 }
             }
         } catch (error) {
