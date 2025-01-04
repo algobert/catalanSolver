@@ -1,5 +1,3 @@
-import { Vertex } from './Vertex.js';
-
 export class Move {
     constructor(selectedVertex, beforeState, afterState) {
         this.selectedVertex = selectedVertex;

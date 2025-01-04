@@ -1,6 +1,5 @@
 import { Graph } from './Graph.js';
 import { Move } from './Move.js';
-import { Vertex } from './Vertex.js';
 
 export class Catalan {
     constructor(initialGraph) {
