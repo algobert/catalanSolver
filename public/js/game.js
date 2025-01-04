@@ -391,10 +391,10 @@ class GraphState {
             this.updateSolvedLevelsDisplay();
         }
 
-        // Optional: GIF nach einiger Zeit ausblenden
+        // GIF für 5 Sekunden anzeigen
         setTimeout(() => {
             this.hideSuccess();
-        }, 3000);
+        }, 5000);
     }
 
     hideSuccess() {
