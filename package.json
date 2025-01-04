@@ -1,5 +1,5 @@
 {
-  "name": "catalanSolver",
+  "name": "catalan-solver",
   "version": "1.0.0",
   "description": "",
   "main": "public/js/index.js",

@@ -11,6 +11,7 @@ const setCustomCacheControl = (res, path) => {
     }
 };
 
+// Statische Dateien
 app.use(express.static('public', {
     maxAge: '1h',
     etag: true,
@@ -33,25 +34,24 @@ app.get('/game', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'game.html'));
 });
 
-// GML Files Route mit Error Handling
+// GML Files Route
 app.get('/gml-files', (req, res) => {
     const gmlDir = path.join(__dirname, 'public', 'gml-files');
-    fs.readdir(gmlDir, (err, files) => {
-        if (err) {
-            console.error('Fehler beim Lesen des GML-Verzeichnisses:', err);
-            res.status(500).send('Fehler beim Laden der GML-Dateien');
-            return;
-        }
+    try {
+        const files = fs.readdirSync(gmlDir);
         const gmlFiles = files.filter(file => file.endsWith('.gml'));
         res.json(gmlFiles);
-    });
+    } catch (err) {
+        console.error('Fehler beim Lesen des GML-Verzeichnisses:', err);
+        res.status(500).send('Fehler beim Laden der GML-Dateien');
+    }
 });
 
+// Einzelne GML File Route
 app.get('/gml-files/:file', (req, res) => {
     const fileName = req.params.file;
     const filePath = path.join(__dirname, 'public', 'gml-files', fileName);
 
-    // Überprüfen Sie, ob die Datei existiert
     if (!fs.existsSync(filePath)) {
         res.status(404).send('Datei nicht gefunden');
         return;
@@ -59,8 +59,14 @@ app.get('/gml-files/:file', (req, res) => {
     res.sendFile(filePath);
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-    console.log(`Server läuft auf Port ${port}`);
-    console.log(`Server gestartet: http://localhost:${port}`);
-});
+// Nur für lokale Entwicklung
+if (process.env.NODE_ENV !== 'production') {
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+        console.log(`Server läuft auf Port ${port}`);
+        console.log(`Server gestartet: http://localhost:${port}`);
+    });
+}
+
+// Für Vercel
+module.exports = app;
