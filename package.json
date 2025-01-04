@@ -5,10 +5,14 @@
   "main": "public/js/index.js",
   "scripts": {
     "start": "node server.js",
-    "build": "node server.js"
+    "build": "node server.js",
+    "vercel-build": "echo hello"
   },
   "private": true,
   "dependencies": {
     "express": "^4.17.1"
+  },
+  "engines": {
+    "node": ">=14.0.0"
   }
 }
