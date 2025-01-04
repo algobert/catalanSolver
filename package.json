@@ -2,11 +2,11 @@
   "name": "catalan-solver",
   "version": "1.0.0",
   "description": "",
-  "main": "public/js/index.js",
+  "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "build": "node server.js",
-    "vercel-build": "echo hello"
+    "build": "npm install",
+    "vercel-build": "npm install"
   },
   "private": true,
   "dependencies": {

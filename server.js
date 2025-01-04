@@ -3,26 +3,8 @@ const app = express();
 const fs = require('fs');
 const path = require('path');
 
-const setCustomCacheControl = (res, path) => {
-    if (path.endsWith('.js')) {
-        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
-        res.setHeader('Pragma', 'no-cache');
-        res.setHeader('Expires', '0');
-    }
-};
-
 // Statische Dateien
-app.use(express.static('public', {
-    maxAge: '1h',
-    etag: true,
-    setHeaders: setCustomCacheControl
-}));
-
-// Error Handler
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Etwas ist schiefgelaufen!');
-});
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Root Route
 app.get('/', (req, res) => {
@@ -59,14 +41,4 @@ app.get('/gml-files/:file', (req, res) => {
     res.sendFile(filePath);
 });
 
-// Nur für lokale Entwicklung
-if (process.env.NODE_ENV !== 'production') {
-    const port = process.env.PORT || 3000;
-    app.listen(port, () => {
-        console.log(`Server läuft auf Port ${port}`);
-        console.log(`Server gestartet: http://localhost:${port}`);
-    });
-}
-
-// Für Vercel
 module.exports = app;
