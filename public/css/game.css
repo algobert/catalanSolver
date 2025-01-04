@@ -46,9 +46,8 @@ canvas {
 }
 
 #solverButton {
-    font-family: inherit; /* Gleiche Schriftart wie andere Buttons */
-    font-size: 14px !important; /* Gleiche Größe erzwingen */
-    padding: 5px 10px !important; /* Gleiches Padding erzwingen */
+    font-size: 18px;
+    margin-right: 10px;
 }
 
 #currentLevelDisplay {
