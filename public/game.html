@@ -1,30 +1,35 @@
-<!-- public/game.html -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8"/>
+    <meta charset="utf-8" />
     <title>CATALAN - Inspired by increpare's Catalan</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/game.css">
 </head>
 <body>
 <!-- Display current level -->
 <div id="currentLevelDisplay">Level: Loading...</div>
-
 <!-- Success Message -->
 <div id="successMessage">SUCCESS!</div>
-
 <!-- Canvas and controls for game -->
-<div class="container">
-    <div id="graph-container"></div>
+<canvas id="graphCanvas"></canvas>
+<div id="controls">
+    <label for="gmlSelect">Choose a GML file:</label>
+    <select id="gmlSelect"></select>
+    <button id="restartButton">Restart Level</button>
+    <button id="undoButton">↩️ Undo</button>
+    <button id="solverButton">🤖 Auto-Solve</button>
+    <label for="nodeLabels">Show node labels</label>
+    <input checked="" id="nodeLabels" type="checkbox" />
 </div>
-
-<!-- Add audio elements -->
-<audio id="levelSound" src="assets/audio/flixel.mp3"></audio>
-<audio id="suckSound" src="assets/audio/gam2.mp3"></audio>
-
-<script type="module">
-    import { initializeGame } from './js/index.js';
-    document.addEventListener('DOMContentLoaded', initializeGame);
-</script>
+<div id="solvedLevels">Solved Levels: None</div>
+<!-- Add audio elements for the sounds -->
+<audio id="levelSound" src="assets/sounds/flixel.mp3"></audio>
+<audio id="suckSound" src="assets/sounds/gam2.mp3"></audio>
+<script type="module" src="js/solver/Vertex.js"></script>
+<script type="module" src="js/solver/Move.js"></script>
+<script type="module" src="js/solver/Graph.js"></script>
+<script type="module" src="js/solver/CatalanError.js"></script>
+<script type="module" src="js/solver/Catalan.js"></script>
+<script type="module" src="js/game.js"></script>
 </body>
 </html>

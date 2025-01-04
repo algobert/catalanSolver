@@ -1,59 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css2?family=Sixtyfour&amp;display=swap" rel="stylesheet" />
+    <meta charset="utf-8" />
     <title>Catalan Solver</title>
-    <link rel="stylesheet" href="css/style.css">
-    <style>
-        .title {
-            position: absolute;
-            top: 30%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            font-size: 3em;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            z-index: 1;
-        }
-
-        #startButton {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            padding: 15px 30px;
-            font-size: 1.2em;
-            background: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            z-index: 1;
-        }
-
-        #startButton:hover {
-            background: #f0f0f0;
-        }
-
-        #particles-js {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: black;
-        }
-    </style>
+    <link rel="stylesheet" href="css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
 </head>
 <body>
 <div id="particles-js"></div>
-<h1 class="title">Catalan Solver</h1>
-<button id="startButton">Start</button>
-
-<script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
-<script>
-    particlesJS.load('particles-js', 'js/particles-config.json');
-    document.getElementById('startButton').addEventListener('click', () => {
-        window.location.href = '/game';
-    });
-</script>
+<div id="overlay" style="text-align: center; font-family: Arial, sans-serif; color: white;">
+    <div style="font-size: 40px; color: red; font-family: 'Sixtyfour',serif;">CATALAN</div>
+    <div style="font-size: 18px; color: lightgray;">a game inspired by increpare games</div>
+    <div style="font-size: 18px; color: lightgray;">Reimplemented for the students of Principles of Programming</div>
+    <div style="font-size: 18px; color: lightgray;">Faculty of Engineering, Bielefeld University</div>
+    <div style="height: 20px;"></div>
+    <!-- Empty line -->
+    <div style="font-size: 18px; color: lightgray;">Daniel Merkle</div>
+    <div style="font-size: 18px; color: lightgray;">Algorithmic Cheminformatics</div>
+    <div style="margin-top: 20px;"><button id="startButton" style="font-size: 24px; padding: 10px 20px;">START</button></div>
+</div>
+<script src="js/main.js"></script>
 </body>
 </html>
