@@ -112,7 +112,7 @@ class GraphState {
         this.draw(ctx);
 
         // Warte kurz und stelle dann die normale Größe wieder her
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await new Promise(resolve => setTimeout(resolve, 2000));
         remainingNode.radius = this.nodeRadius;
         this.draw(ctx);
 
