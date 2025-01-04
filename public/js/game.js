@@ -124,9 +124,6 @@ class GraphState {
         }
     }
 
-
-
-
     applyForces() {
         const attractionForce = 0.001;  // Reduced attraction force
         const repulsionForce = 20000;    // Reduced repulsion force
@@ -233,6 +230,7 @@ class GraphState {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.strokeStyle = 'white';
 
+        // Zeichne zuerst die Kanten
         this.edges.forEach(edge => {
             const source = this.nodes.find(node => node.id === edge.source);
             const target = this.nodes.find(node => node.id === edge.target);
@@ -244,11 +242,15 @@ class GraphState {
             }
         });
 
+        // Dann die Knoten
         this.nodes.forEach(node => {
             ctx.beginPath();
-            ctx.arc(node.x, node.y, this.nodeRadius, 0, Math.PI * 2);
+            // Verwende die spezifische Knotengröße oder die Standard-Größe
+            const radius = node.radius || this.nodeRadius;
+            ctx.arc(node.x, node.y, radius, 0, Math.PI * 2);
             ctx.fillStyle = 'red';
             ctx.fill();
+
             if (this.showNodeLabels) {
                 ctx.fillStyle = 'white';
                 ctx.font = "30px Arial";
@@ -294,7 +296,7 @@ class GraphState {
         if (!mergingNode || this.suckTimeout || this.isSucking) return;
 
         this.isSucking = true;
-        let steps = 75;  // Erhöht von 75 auf 100 für längere Animation
+        let steps = 50;  // Erhöht von 75 auf 100 für längere Animation
 
         const animateSuck = () => {
             if (steps-- > 0) {
@@ -302,8 +304,8 @@ class GraphState {
                     const neighbor = this.nodes.find(node => node.id === neighborId);
                     if (neighbor) {
                         // Reduziert von 0.1 auf 0.05 für langsamere Bewegung
-                        neighbor.x += (mergingNode.x - neighbor.x) * 0.03;
-                        neighbor.y += (mergingNode.y - neighbor.y) * 0.03;
+                        neighbor.x += (mergingNode.x - neighbor.x) * 0.1;
+                        neighbor.y += (mergingNode.y - neighbor.y) * 0.1;
                     }
                 });
 
