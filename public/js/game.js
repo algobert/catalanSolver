@@ -98,7 +98,7 @@ class GraphState {
 
         if (this.nodes.length === 1) {
             this.displaySuccess();
-            setTimeout(() => this.loadNextLevel(), 2000);
+            setTimeout(() => this.loadNextLevel(), 4000);
         }
     }
 
@@ -391,10 +391,10 @@ class GraphState {
             this.updateSolvedLevelsDisplay();
         }
 
-        // GIF für 5 Sekunden anzeigen
+        // GIF für 4 Sekunden anzeigen
         setTimeout(() => {
             this.hideSuccess();
-        }, 5000);
+        }, 4000);
     }
 
     hideSuccess() {
