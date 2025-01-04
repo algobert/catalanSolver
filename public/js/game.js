@@ -381,17 +381,27 @@ class GraphState {
 
     displaySuccess() {
         const successMessage = document.getElementById('successMessage');
+        const successGif = successMessage.querySelector('img');
+
         successMessage.style.display = 'block';
-        successMessage.innerHTML = "SUCCESS!";
+        successGif.style.display = 'block';
+
         if (!this.solvedLevels.has(this.currentLevel)) {
             this.solvedLevels.add(this.currentLevel);
             this.updateSolvedLevelsDisplay();
         }
+
+        // Optional: GIF nach einiger Zeit ausblenden
+        setTimeout(() => {
+            this.hideSuccess();
+        }, 3000);
     }
 
     hideSuccess() {
         const successMessage = document.getElementById('successMessage');
+        const successGif = successMessage.querySelector('img');
         successMessage.style.display = 'none';
+        successGif.style.display = 'none';
     }
 
     updateSolvedLevelsDisplay() {

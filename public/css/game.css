@@ -14,16 +14,16 @@ canvas {
 }
 
 #successMessage {
-    font-size: 24px;
-    color: green;
-    text-align: center;
-    margin-top: 10px;
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    display: none;
     z-index: 1000;
+}
+
+#successMessage img {
+    max-width: 300px;
+    height: auto;
 }
 
 #solvedLevels {
