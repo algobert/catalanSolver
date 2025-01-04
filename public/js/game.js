@@ -108,11 +108,11 @@ class GraphState {
         remainingNode.y = mergeY;
 
         // Füge einen visuellen Effekt hinzu
-        remainingNode.radius = this.nodeRadius * 1.5; // Vergrößere den Knoten kurzzeitig
+        remainingNode.radius = this.nodeRadius * 1.5; // Vergrößert den Knoten kurzzeitig
         this.draw(ctx);
 
         // Warte kurz und stelle dann die normale Größe wieder her
-        await new Promise(resolve => setTimeout(resolve, 500));
+        await new Promise(resolve => setTimeout(resolve, 1000));
         remainingNode.radius = this.nodeRadius;
         this.draw(ctx);
 
