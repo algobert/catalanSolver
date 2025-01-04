@@ -272,7 +272,7 @@ class GraphState {
         if (!mergingNode || this.suckTimeout || this.isSucking) return;
 
         this.isSucking = true;
-        let steps = 50;
+        let steps = 75;
 
         const animateSuck = () => {
             if (steps-- > 0) {

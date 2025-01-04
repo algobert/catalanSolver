@@ -54,7 +54,7 @@ class AutoSolver {
             for (let nodeId of nodeIds) {
                 // Wait until any ongoing sucking animation is complete
                 while (this.graphState && this.graphState.isSucking) {
-                    await new Promise(resolve => setTimeout(resolve, 100));
+                    await new Promise(resolve => setTimeout(resolve, 160));
                 }
 
                 if (this.graphState) {
