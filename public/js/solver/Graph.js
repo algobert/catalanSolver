@@ -1,74 +1,68 @@
-import { CatalanError } from './CatalanError.js';
 import { Vertex } from './Vertex.js';
 
-class Graph {
+export class Graph {
     constructor(size) {
-        this.adjacencyMatrix = Array(size).fill().map(() => Array(size).fill(false));
+        this.adjacencyMatrix = Array.from({ length: size }, () => Array(size).fill(false));
         this.vertexToIndex = Array(size).fill(0);
         this.numVertices = size;
     }
 
-    static parseGmlContent(content) {
-        // GML Parser-Implementierung
-        if (!content.trim().startsWith('graph [')) {
-            throw new CatalanError(
-                CatalanError.types.GML_PARSE_ERROR,
-                "Invalid GML format: missing 'graph [' header"
-            );
-        }
+    static async readFromFile(path) {
+        const fs = require('fs').promises;
 
-        // Regex für Nodes und Edges
-        const nodeRegex = /node\s*\[\s*id\s+(\d+)/g;
-        const edgeRegex = /edge\s*\[\s*source\s+(\d+)\s+target\s+(\d+)/g;
+        try {
+            const contents = await fs.readFile(path, 'utf8');
 
-        // Vertices extrahieren
-        const vertices = [];
-        let match;
-        while ((match = nodeRegex.exec(content)) !== null) {
-            vertices.push(parseInt(match[1]));
-        }
+            const nodeRe = /node\s*\[\s*id\s+(\d+)/g;
+            const edgeRe = /edge\s*\[\s*source\s+(\d+)\s+target\s+(\d+)/g;
 
-        if (vertices.length === 0) {
-            throw new CatalanError(
-                CatalanError.types.GML_PARSE_ERROR,
-                "Invalid GML format: no vertices found"
-            );
-        }
-
-        // Graph initialisieren
-        const graph = new Graph(vertices.length);
-        vertices.forEach((vertexId, index) => {
-            graph.vertexToIndex[index] = vertexId;
-        });
-
-        // Kanten verarbeiten
-        while ((match = edgeRegex.exec(content)) !== null) {
-            const source = parseInt(match[1]);
-            const target = parseInt(match[2]);
-
-            const sourceIdx = graph.getIndex(source);
-            const targetIdx = graph.getIndex(target);
-
-            if (sourceIdx !== undefined && targetIdx !== undefined) {
-                graph.adjacencyMatrix[sourceIdx][targetIdx] = true;
-                graph.adjacencyMatrix[targetIdx][sourceIdx] = true;
-            } else {
-                throw new CatalanError(
-                    CatalanError.types.GML_PARSE_ERROR,
-                    `Edge references nonexistent vertex: ${source} or ${target}`
-                );
+            if (!contents.trim().startsWith("graphState [")) {
+                throw new Error("Invalid GML format: missing 'graphState [' header");
             }
-        }
 
-        return graph;
+            const vertices = [];
+            let match;
+            while ((match = nodeRe.exec(contents)) !== null) {
+                vertices.push(parseInt(match[1], 10));
+            }
+
+            if (vertices.length === 0) {
+                throw new Error("Invalid GML format: no vertices found");
+            }
+
+            const graph = new Graph(vertices.length);
+            vertices.forEach((vertexId, index) => {
+                graph.vertexToIndex[index] = vertexId;
+            });
+
+            while ((match = edgeRe.exec(contents)) !== null) {
+                const source = parseInt(match[1], 10);
+                const target = parseInt(match[2], 10);
+
+                const sourceIdx = graph.getIndex(source);
+                const targetIdx = graph.getIndex(target);
+
+                if (sourceIdx !== undefined && targetIdx !== undefined) {
+                    graph.adjacencyMatrix[sourceIdx][targetIdx] = true;
+                    graph.adjacencyMatrix[targetIdx][sourceIdx] = true;
+                } else {
+                    throw new Error(`Edge references nonexistent vertex: ${source} or ${target}`);
+                }
+            }
+
+            return graph;
+        } catch (error) {
+            throw new Error(`Failed to read file: ${error.message}`);
+        }
     }
 
     getIndex(vertexId) {
-        return this.vertexToIndex.findIndex(id => id === vertexId);
+        return this.vertexToIndex.indexOf(vertexId);
     }
 
     getVertexByIndex(index) {
-        return index < this.vertexToIndex.length ? new Vertex(this.vertexToIndex[index]) : null;
+        const id = this.vertexToIndex[index];
+        return id !== undefined ? new Vertex(id) : null;
     }
 
     getVertices() {
@@ -76,101 +70,74 @@ class Graph {
     }
 
     getNeighbours(vertex) {
-        const idx = this.getIndex(vertex.getId());
-        if (idx === -1) return [];
-
-        return this.adjacencyMatrix[idx]
-            .map((connected, index) => connected ? this.getVertexByIndex(index) : null)
-            .filter(v => v !== null);
-    }
-
-    clone() {
-        const newGraph = new Graph(this.numVertices);
-        newGraph.adjacencyMatrix = this.adjacencyMatrix.map(row => [...row]);
-        newGraph.vertexToIndex = [...this.vertexToIndex];
-        return newGraph;
+        const uIdx = this.getIndex(vertex.getId());
+        if (uIdx !== undefined) {
+            return this.adjacencyMatrix[uIdx]
+                .map((connected, idx) => connected ? this.getVertexByIndex(idx) : null)
+                .filter(v => v !== null);
+        }
+        return [];
     }
 
     collapseNeighbours(vertex) {
         const neighbours = this.getNeighbours(vertex);
 
         if (neighbours.length !== 3) {
-            throw new CatalanError(
-                CatalanError.types.INVALID_VERTEX_OPERATION,
-                `Vertex ${vertex.getId()} must have exactly 3 neighbours, has ${neighbours.length}`
-            );
+            throw new Error(`Vertex ${vertex.getId()} must have exactly 3 neighbours, has ${neighbours.length}`);
         }
 
-        const vertexIdx = this.getIndex(vertex.getId());
-        if (vertexIdx === -1) {
-            throw new CatalanError(
-                CatalanError.types.INVALID_VERTEX_OPERATION,
-                `Vertex ${vertex.getId()} not found`
-            );
+        const uIdx = this.getIndex(vertex.getId());
+        if (uIdx === undefined) {
+            throw new Error(`Vertex ${vertex.getId()} not found`);
         }
 
-        // Nachbarindizes ermitteln
-        const neighbourIndices = neighbours
-            .map(n => this.getIndex(n.getId()))
-            .filter(idx => idx !== -1);
+        const neighbourIndices = neighbours.map(n => this.getIndex(n.getId()));
 
-        if (neighbourIndices.length !== 3) {
-            throw new CatalanError(
-                CatalanError.types.INVALID_VERTEX_OPERATION,
-                `Could not find all neighbour indices for vertex ${vertex.getId()}`
-            );
+        if (neighbourIndices.includes(undefined)) {
+            throw new Error(`Could not find all neighbour indices for vertex ${vertex.getId()}`);
         }
 
-        // Neuen Graphen erstellen
         const newSize = this.numVertices - 3;
         const newGraph = new Graph(newSize);
 
-        // Mapping erstellen
         const oldToNew = Array(this.numVertices).fill(null);
         let newIdx = 0;
 
-        // Zentraler Knoten behält ersten Index
-        oldToNew[vertexIdx] = 0;
-        newGraph.vertexToIndex[0] = this.vertexToIndex[vertexIdx];
+        oldToNew[uIdx] = 0;
+        newGraph.vertexToIndex[0] = this.vertexToIndex[uIdx];
 
-        // Verbleibende Knoten kopieren
         for (let oldIdx = 0; oldIdx < this.numVertices; oldIdx++) {
-            if (!neighbourIndices.includes(oldIdx) && oldIdx !== vertexIdx) {
-                if (newIdx + 1 < newSize) {
-                    newIdx++;
-                    oldToNew[oldIdx] = newIdx;
-                    newGraph.vertexToIndex[newIdx] = this.vertexToIndex[oldIdx];
-                }
+            if (!neighbourIndices.includes(oldIdx) && oldIdx !== uIdx) {
+                newIdx++;
+                oldToNew[oldIdx] = newIdx;
+                newGraph.vertexToIndex[newIdx] = this.vertexToIndex[oldIdx];
             }
         }
 
-        // Verbindungen kopieren und aktualisieren
         for (let oldI = 0; oldI < this.numVertices; oldI++) {
-            if (oldToNew[oldI] !== null) {
+            const newI = oldToNew[oldI];
+            if (newI !== null) {
                 for (let oldJ = 0; oldJ < this.numVertices; oldJ++) {
-                    if (oldToNew[oldJ] !== null) {
-                        newGraph.adjacencyMatrix[oldToNew[oldI]][oldToNew[oldJ]] =
-                            this.adjacencyMatrix[oldI][oldJ];
+                    const newJ = oldToNew[oldJ];
+                    if (newJ !== null) {
+                        newGraph.adjacencyMatrix[newI][newJ] = this.adjacencyMatrix[oldI][oldJ];
                     }
                 }
             }
         }
 
-        // Nachbarn der kollabierten Knoten mit dem zentralen Vertex verbinden
-        for (const nIdx of neighbourIndices) {
+        neighbourIndices.forEach(nIdx => {
             for (let oldIdx = 0; oldIdx < this.numVertices; oldIdx++) {
-                if (this.adjacencyMatrix[nIdx][oldIdx] &&
-                    !neighbourIndices.includes(oldIdx) &&
-                    oldIdx !== vertexIdx) {
-                    if (oldToNew[oldIdx] !== null) {
-                        newGraph.adjacencyMatrix[0][oldToNew[oldIdx]] = true;
-                        newGraph.adjacencyMatrix[oldToNew[oldIdx]][0] = true;
+                if (this.adjacencyMatrix[nIdx][oldIdx] && !neighbourIndices.includes(oldIdx) && oldIdx !== uIdx) {
+                    const newIdx = oldToNew[oldIdx];
+                    if (newIdx !== null) {
+                        newGraph.adjacencyMatrix[0][newIdx] = true;
+                        newGraph.adjacencyMatrix[newIdx][0] = true;
                     }
                 }
             }
-        }
+        });
 
         return newGraph;
     }
 }
-export { Graph };

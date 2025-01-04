@@ -3,14 +3,18 @@ const app = express();
 const fs = require('fs');
 const path = require('path');
 
-// Middleware für JSON-Parsing
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const setCustomCacheControl = (res, path) => {
+    if (path.endsWith('.js')) {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.setHeader('Pragma', 'no-cache');
+        res.setHeader('Expires', '0');
+    }
+};
 
-// Statische Dateien mit Cache-Control
 app.use(express.static('public', {
     maxAge: '1h',
-    etag: true
+    etag: true,
+    setHeaders: setCustomCacheControl
 }));
 
 // Error Handler

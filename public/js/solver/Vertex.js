@@ -1,4 +1,4 @@
-class Vertex {
+export class Vertex {
     constructor(id) {
         this.id = id;
     }
@@ -10,10 +10,4 @@ class Vertex {
     toString() {
         return `Vertex(${this.id})`;
     }
-
-    static compare(a, b) {
-        return a.id - b.id;
-    }
 }
-
-export { Vertex };

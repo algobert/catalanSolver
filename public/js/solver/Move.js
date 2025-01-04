@@ -1,4 +1,6 @@
-class Move {
+import { Vertex } from './Vertex.js';
+
+export class Move {
     constructor(selectedVertex, beforeState, afterState) {
         this.selectedVertex = selectedVertex;
         this.beforeState = beforeState;
@@ -9,5 +11,3 @@ class Move {
         return `select vertex ${this.selectedVertex.getId()}`;
     }
 }
-
-export { Move };

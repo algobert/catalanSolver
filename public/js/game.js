@@ -1,5 +1,4 @@
-import { AutoSolver } from './solver/autosolver.js';
-let currentGmlText = '';
+import { AutoSolver } from './solver/CatalanSolver.js';
 
 // Linear Congruential Generator (LCG)
 function SeededRandomGenerator(seed) {
@@ -18,7 +17,6 @@ class GraphState {
     constructor() {
         this.nodes = [];
         this.edges = [];
-        this.gmlText = '';
         this.nodeRadius = 20;
         this.draggingNode = null;
         this.dragOffsetX = 0;
@@ -376,6 +374,7 @@ class GraphState {
                 .then(response => response.text())
                 .then(gmlText => {
                     this.loadFromGML(gmlText, nextLevel);
+                    solver.solve(gmlText);
                 });
         }
     }
@@ -449,8 +448,8 @@ fetch('/gml-files')
             fetch(`/gml-files/${files[0]}`)
                 .then(response => response.text())
                 .then(gmlText => {
-                    currentGmlText = gmlText; // Diese Zeile hinzufügen
                     graph.loadFromGML(gmlText, files[0]);
+                    solver.solve(gmlText);
                 });
         }
     });
@@ -465,8 +464,8 @@ document.getElementById('gmlSelect').addEventListener('change', function (event)
     fetch(`/gml-files/${selectedFile}`)
         .then(response => response.text())
         .then(gmlText => {
-            currentGmlText = gmlText; // Diese Zeile hinzufügen
             graph.loadFromGML(gmlText, selectedFile);
+            solver.solve(gmlText);
         });
 });
 
@@ -475,8 +474,8 @@ document.getElementById('restartButton').addEventListener('click', function () {
         fetch(`/gml-files/${graph.currentLevel}`)
             .then(response => response.text())
             .then(gmlText => {
-                currentGmlText = gmlText; // Diese Zeile hinzufügen
                 graph.loadFromGML(gmlText, graph.currentLevel);
+                solver.solve(gmlText);
             });
     }
 });
@@ -486,12 +485,8 @@ document.getElementById('undoButton').addEventListener('click', function () {
 });
 
 document.getElementById('solverButton').addEventListener('click', function() {
-    console.log("Solver Button clicked!");
-    if(currentGmlText) {
-        console.log("Current GML Text:", currentGmlText);
-        solver.solve(currentGmlText);
-    } else {
-        console.log("No GML text available!");
+    if (solver.solution) {
+        solver.executeSolution();
     }
 });
 
