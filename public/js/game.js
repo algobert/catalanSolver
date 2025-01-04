@@ -71,7 +71,7 @@ class GraphState {
             .map(edge => edge.source === nodeId ? edge.target : edge.source);
     }
 
-    mergeNodes(nodeId) {
+    async mergeNodes(nodeId) {
         const neighbors = this.getNodeNeighbors(nodeId);
         if (neighbors.length !== 3) return;
 
@@ -84,15 +84,37 @@ class GraphState {
             });
         });
 
+        // Speichere die Position des zusammengeführten Knotens
+        const mergingNode = this.nodes.find(node => node.id === nodeId);
+        const mergeX = mergingNode.x;
+        const mergeY = mergingNode.y;
+
         this.saveState();
+
+        // Entferne die alten Knoten und Kanten
         this.nodes = this.nodes.filter(node => !neighbors.includes(node.id));
         this.edges = this.edges.filter(edge =>
             !(neighbors.includes(edge.source) || neighbors.includes(edge.target))
         );
 
+        // Füge neue Kanten hinzu
         allNeighbors.forEach(neighborId => {
             this.addEdge(nodeId, neighborId);
         });
+
+        // Setze die Position des übrig gebliebenen Knotens
+        const remainingNode = this.nodes.find(node => node.id === nodeId);
+        remainingNode.x = mergeX;
+        remainingNode.y = mergeY;
+
+        // Füge einen visuellen Effekt hinzu
+        remainingNode.radius = this.nodeRadius * 1.5; // Vergrößere den Knoten kurzzeitig
+        this.draw(ctx);
+
+        // Warte kurz und stelle dann die normale Größe wieder her
+        await new Promise(resolve => setTimeout(resolve, 500));
+        remainingNode.radius = this.nodeRadius;
+        this.draw(ctx);
 
         this.isSucking = false;
 
