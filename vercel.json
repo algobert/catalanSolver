@@ -7,6 +7,7 @@
     }
   ],
   "routes": [
+    { "src": "/gml-files", "dest": "/server.js" },
     { "src": "/gml-files/(.*)", "dest": "/server.js" },
     { "src": "/game", "dest": "/server.js" },
     { "src": "/(.*)", "dest": "/server.js" }

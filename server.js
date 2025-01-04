@@ -18,27 +18,32 @@ app.get('/game', (req, res) => {
 
 // GML Files Route
 app.get('/gml-files', (req, res) => {
-    const gmlDir = path.join(__dirname, 'public', 'gml-files');
+    const gmlDir = path.join(process.cwd(), 'public', 'gml-files');
     try {
         const files = fs.readdirSync(gmlDir);
         const gmlFiles = files.filter(file => file.endsWith('.gml'));
         res.json(gmlFiles);
     } catch (err) {
         console.error('Fehler beim Lesen des GML-Verzeichnisses:', err);
-        res.status(500).send('Fehler beim Laden der GML-Dateien');
+        res.status(500).json({ error: 'Fehler beim Laden der GML-Dateien' });
     }
 });
 
 // Einzelne GML File Route
 app.get('/gml-files/:file', (req, res) => {
     const fileName = req.params.file;
-    const filePath = path.join(__dirname, 'public', 'gml-files', fileName);
+    const filePath = path.join(process.cwd(), 'public', 'gml-files', fileName);
 
-    if (!fs.existsSync(filePath)) {
-        res.status(404).send('Datei nicht gefunden');
-        return;
+    try {
+        if (!fs.existsSync(filePath)) {
+            return res.status(404).json({ error: 'Datei nicht gefunden' });
+        }
+        const fileContent = fs.readFileSync(filePath, 'utf8');
+        res.type('text/plain').send(fileContent);
+    } catch (err) {
+        console.error('Fehler beim Lesen der GML-Datei:', err);
+        res.status(500).json({ error: 'Fehler beim Lesen der Datei' });
     }
-    res.sendFile(filePath);
 });
 
 module.exports = app;
